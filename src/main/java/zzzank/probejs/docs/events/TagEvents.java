@@ -1,7 +1,7 @@
 package zzzank.probejs.docs.events;
 
-import dev.latvian.kubejs.script.ScriptType;
-import dev.latvian.kubejs.server.TagEventJS;
+import dev.latvian.mods.kubejs.script.ScriptType;
+import dev.latvian.mods.kubejs.server.TagEventJS;
 import lombok.val;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import zzzank.probejs.lang.java.clazz.ClassPath;

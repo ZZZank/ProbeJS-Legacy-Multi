@@ -1,8 +1,8 @@
 package zzzank.probejs.docs;
 
-import dev.latvian.kubejs.bindings.TextWrapper;
-import dev.latvian.kubejs.recipe.RecipeEventJS;
-import dev.latvian.kubejs.text.Text;
+import dev.latvian.mods.kubejs.bindings.TextWrapper;
+import dev.latvian.mods.kubejs.recipe.RecipeEventJS;
+import dev.latvian.mods.kubejs.text.Text;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import net.minecraft.core.Registry;

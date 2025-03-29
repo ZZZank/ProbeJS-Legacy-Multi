@@ -1,8 +1,8 @@
 package zzzank.probejs.features.forge_scan;
 
 import lombok.val;
-import me.shedaniel.architectury.platform.Mod;
-import me.shedaniel.architectury.platform.Platform;
+import dev.architectury.platform.Mod;
+import dev.architectury.platform.Platform;
 import net.minecraftforge.fml.ModList;
 import org.jetbrains.annotations.NotNull;
 import zzzank.probejs.ProbeConfig;

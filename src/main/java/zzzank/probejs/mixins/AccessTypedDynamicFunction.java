@@ -1,6 +1,6 @@
 package zzzank.probejs.mixins;
 
-import dev.latvian.kubejs.script.TypedDynamicFunction;
+import dev.latvian.mods.kubejs.script.TypedDynamicFunction;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 

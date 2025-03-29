@@ -1,6 +1,6 @@
 package zzzank.probejs.lang.transpiler.transformation.impl;
 
-import dev.latvian.kubejs.script.ScriptManager;
+import dev.latvian.mods.kubejs.script.ScriptManager;
 import zzzank.probejs.lang.java.clazz.Clazz;
 import zzzank.probejs.lang.transpiler.transformation.ClassTransformer;
 import zzzank.probejs.lang.typescript.code.member.ClassDecl;

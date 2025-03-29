@@ -1,8 +1,8 @@
 package zzzank.probejs.features.kubejs;
 
 import com.google.gson.JsonObject;
-import dev.latvian.kubejs.event.EventJS;
-import dev.latvian.kubejs.script.ScriptType;
+import dev.latvian.mods.kubejs.event.EventJS;
+import dev.latvian.mods.kubejs.script.ScriptType;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;

@@ -1,6 +1,6 @@
 package zzzank.probejs.docs.bindings;
 
-import dev.latvian.kubejs.script.TypedDynamicFunction;
+import dev.latvian.mods.kubejs.script.TypedDynamicFunction;
 import dev.latvian.mods.rhino.NativeJavaClass;
 import lombok.val;
 import zzzank.probejs.ProbeConfig;
