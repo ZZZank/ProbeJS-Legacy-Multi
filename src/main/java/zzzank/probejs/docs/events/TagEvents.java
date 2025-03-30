@@ -51,7 +51,7 @@ public class TagEvents implements ProbeJSPlugin {
             val extraName = key.location().getNamespace().equals("minecraft")
                 ? key.location().getPath()
                 : key.location().toString();
-            val declaration = Statements.method("tags")
+            val declaration = Statements.func("tags")
                 .param("extra", Types.literal(extraName))
                 .param("handler", Types.lambda()
                     .param("event", eventType.withParams(tagName, typeName))

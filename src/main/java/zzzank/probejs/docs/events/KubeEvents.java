@@ -10,7 +10,7 @@ import zzzank.probejs.features.kubejs.EventJSFilter;
 import zzzank.probejs.lang.transpiler.TypeConverter;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.Code;
-import zzzank.probejs.lang.typescript.code.member.MethodDecl;
+import zzzank.probejs.lang.typescript.code.ts.FunctionDeclaration;
 import zzzank.probejs.lang.typescript.code.ts.Statements;
 import zzzank.probejs.lang.typescript.code.ts.Wrapped;
 import zzzank.probejs.lang.typescript.code.type.Types;
@@ -78,8 +78,8 @@ public class KubeEvents implements ProbeJSPlugin {
         return classes;
     }
 
-    private static MethodDecl formatEvent(TypeConverter converter, EventHandler handler, boolean useExtra) {
-        val builder = Statements.method(handler.name);
+    private static FunctionDeclaration formatEvent(TypeConverter converter, EventHandler handler, boolean useExtra) {
+        val builder = Statements.func(handler.name);
         if (useExtra) {
             val typeDesc = handler.extra.describeType.apply(TypeDescAdapter.PROBEJS);
             val extraType = TypeDescAdapter.convertType(typeDesc);
@@ -89,7 +89,7 @@ public class KubeEvents implements ProbeJSPlugin {
             .param("event", Types.typeMaybeGeneric(handler.eventType.get()))
             .build();
         builder.param("handler", callback);
-        return builder.buildAsMethod();
+        return builder.build();
     }
 
     private static BiPredicate<EventGroup, EventHandler> getDisabledEvents(ScriptDump dump) {

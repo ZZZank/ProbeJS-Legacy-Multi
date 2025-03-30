@@ -38,7 +38,7 @@ public class RegistryEvents implements ProbeJSPlugin {
                 key.location().getPath() :
                 key.location().toString();
 
-            val declaration = Statements.method("registry")
+            val declaration = Statements.func("registry")
                 .param("extra", Types.literal(extraName))
                 .param(
                     "handler", Types.lambda()
