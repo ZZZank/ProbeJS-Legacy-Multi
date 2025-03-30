@@ -5,6 +5,7 @@ import dev.latvian.mods.kubejs.event.EventGroup;
 import dev.latvian.mods.kubejs.event.EventHandler;
 import lombok.val;
 import zzzank.probejs.features.kesseractjs.TypeDescAdapter;
+import zzzank.probejs.features.kubejs.BindingFilter;
 import zzzank.probejs.features.kubejs.EventJSFilter;
 import zzzank.probejs.lang.transpiler.TypeConverter;
 import zzzank.probejs.lang.typescript.ScriptDump;
@@ -95,5 +96,12 @@ public class KubeEvents implements ProbeJSPlugin {
         val filter = new EventJSFilter(dump);
         ProbeJSPlugins.forEachPlugin(plugin -> plugin.disableEventDumps(filter));
         return filter.freeze();
+    }
+
+    @Override
+    public void denyBindings(BindingFilter filter) {
+        for (val group : EventGroup.getGroups().keySet()) {
+            filter.denyConstant(group);
+        }
     }
 }
