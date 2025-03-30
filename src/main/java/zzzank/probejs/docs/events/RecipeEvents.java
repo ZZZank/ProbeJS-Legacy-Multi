@@ -8,6 +8,7 @@ import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 import dev.latvian.mods.kubejs.recipe.schema.minecraft.SpecialRecipeSchema;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import lombok.val;
+import net.minecraft.resources.ResourceLocation;
 import zzzank.probejs.features.kesseractjs.TypeDescAdapter;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.java.clazz.ClassPath;
@@ -19,7 +20,6 @@ import zzzank.probejs.lang.typescript.TypeScriptFile;
 import zzzank.probejs.lang.typescript.code.Code;
 import zzzank.probejs.lang.typescript.code.member.ClassDecl;
 import zzzank.probejs.lang.typescript.code.ts.Statements;
-import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
 import zzzank.probejs.utils.NameUtils;
@@ -30,20 +30,20 @@ import java.util.Map;
 import java.util.Set;
 
 public class RecipeEvents implements ProbeJSPlugin {
-    public static final Map<String, String> SHORTCUTS = new HashMap<>();
+    public static final Map<String, ResourceLocation> SHORTCUTS = new HashMap<>();
     public static final ClassPath DOCUMENTED_RECIPES =
         ClassPath.fromRaw("moe.wolfgirl.probejs.generated.DocumentedRecipes");
 
     static {
-        SHORTCUTS.put("shaped", "kubejs:shaped");
-        SHORTCUTS.put("shapeless", "kubejs:shapeless");
-        SHORTCUTS.put("smelting", "minecraft:smelting");
-        SHORTCUTS.put("blasting", "minecraft:blasting");
-        SHORTCUTS.put("smoking", "minecraft:smoking");
-        SHORTCUTS.put("campfireCooking", "minecraft:campfire_cooking");
-        SHORTCUTS.put("stonecutting", "minecraft:stonecutting");
-        SHORTCUTS.put("smithing", "minecraft:smithing_transform");
-        SHORTCUTS.put("smithingTrim", "minecraft:smithing_trim");
+        SHORTCUTS.put("shaped", new ResourceLocation("kubejs", "shaped"));
+        SHORTCUTS.put("shapeless", new ResourceLocation("kubejs", "shapeless"));
+        SHORTCUTS.put("smelting", new ResourceLocation("minecraft", "smelting"));
+        SHORTCUTS.put("blasting", new ResourceLocation("minecraft", "blasting"));
+        SHORTCUTS.put("smoking", new ResourceLocation("minecraft", "smoking"));
+        SHORTCUTS.put("campfireCooking", new ResourceLocation("minecraft", "campfire_cooking"));
+        SHORTCUTS.put("stonecutting", new ResourceLocation("minecraft", "stonecutting"));
+        SHORTCUTS.put("smithing", new ResourceLocation("minecraft", "smithing_transform"));
+        SHORTCUTS.put("smithingTrim", new ResourceLocation("minecraft", "smithing_trim"));
     }
 
     @Override
@@ -108,20 +108,21 @@ public class RecipeEvents implements ProbeJSPlugin {
         recipeEventFile.declaration.addImport(ImportInfo.ofDefault(DOCUMENTED_RECIPES));
 
         // Make shortcuts valid recipe functions
-        for (val field : recipeEvent.fields) {
-            if (!SHORTCUTS.containsKey(field.name)) {
+        for (val code : recipeEvent.bodyCode) {
+            if (!(code instanceof BeanDecl.Getter getter)) {
                 continue;
             }
-            val parts = SHORTCUTS.get(field.name).split(":", 2);
-            val shortcutSchema = RecipeNamespace.getAll().get(parts[0]).get(parts[1]).schema;
-            val returnType = getSchemaClassPath(parts[0], parts[1]);
-            field.type = generateSchemaFunction(returnType, shortcutSchema, converter);
-
-            for (val usedClassPath : field.type.getImportInfos(BaseType.FormatType.RETURN)) {
-                recipeEventFile.declaration.addImport(usedClassPath);
+            val recipeLocation = SHORTCUTS.get(getter.name);
+            if (recipeLocation == null) {
+                continue;
             }
+            getter.type = Types.format(
+                "%s[%s][%s]",
+                Types.type(DOCUMENTED_RECIPES),
+                Types.literal(recipeLocation.getNamespace()),
+                Types.literal(recipeLocation.getPath())
+            );
         }
-
     }
 
     private static ClassPath getSchemaClassPath(String namespace, String id) {
