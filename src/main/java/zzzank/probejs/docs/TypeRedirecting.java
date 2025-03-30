@@ -20,7 +20,9 @@ public class TypeRedirecting implements ProbeJSPlugin {
     public static final Set<Class<?>> CLASS_CONVERTIBLES = new HashSet<>();
 
     static {
-        CLASS_CONVERTIBLES.add(ClassWrapper.class);
+        if (RhizoState.CLASS_WRAPPER) {
+            CLASS_CONVERTIBLES.add(ClassWrapper.class);
+        }
     }
 
     @Override
