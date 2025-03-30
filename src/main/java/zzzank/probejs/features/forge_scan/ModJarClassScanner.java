@@ -11,9 +11,7 @@ import zzzank.probejs.utils.ReflectUtils;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -24,6 +22,9 @@ import java.util.zip.ZipFile;
 class ModJarClassScanner {
 
     public static final String DESC_MIXIN = Type.getDescriptor(Mixin.class);
+    public static final Set<String> DENIED_CLASSES = new HashSet<>(Arrays.asList(
+        "com.mojang.blaze3d.systems.TimerQuery"
+    ));
 
     public static Set<Class<?>> scanFile(File file) {
         try (val jarFile = new ZipFile(file)) {
@@ -86,6 +87,7 @@ class ModJarClassScanner {
             .filter(name -> name.endsWith(ReflectUtils.CLASS_SUFFIX))
             .filter(this::presentAndNotMixin)
             .map(name -> name.substring(0, name.length() - ReflectUtils.CLASS_SUFFIX.length()).replace("/", "."))
+            .filter(name -> !DENIED_CLASSES.contains(name))
             .map(ReflectUtils::classOrNull)
             .filter(Objects::nonNull)
             .filter(c -> Modifier.isPublic(c.getModifiers()) || !ProbeConfig.publicClassOnly.get())
