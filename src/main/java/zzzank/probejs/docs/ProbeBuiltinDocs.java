@@ -5,8 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.docs.assignments.*;
 import zzzank.probejs.docs.bindings.Bindings;
-import zzzank.probejs.docs.events.ForgeEvents;
-import zzzank.probejs.docs.events.KubeEvents;
+import zzzank.probejs.docs.events.*;
 import zzzank.probejs.features.kubejs.BindingFilter;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.schema.SchemaDump;
@@ -47,8 +46,11 @@ public final class ProbeBuiltinDocs implements ProbeJSPlugin {
             new Bindings(),
             new LoadClassFn(),
             //event
-            new KubeEvents(),
             new ForgeEvents(),
+            new KubeEvents(),
+            new RecipeEvents(),
+            new RegistryEvents(),
+            new TagEvents(),
             //misc
             new GlobalClasses(),
             new ParamFix(),

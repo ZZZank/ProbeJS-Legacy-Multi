@@ -41,11 +41,4 @@ public class EnumTypes implements ProbeJSPlugin {
         }
         LOCK.unlock();
     }
-
-    private static String getEnumName(Object o) {
-        if (o instanceof Enum<?> e) {
-            return e.name();
-        }
-        return null;
-    }
 }
