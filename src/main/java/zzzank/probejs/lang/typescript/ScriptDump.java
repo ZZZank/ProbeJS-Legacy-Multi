@@ -52,7 +52,7 @@ public class ScriptDump {
         }
 
         return new ScriptDump(
-            scriptManager.scriptManager,
+            scriptManager,
             ProbePaths.PROBE.resolve("server"),
             KubeJSPaths.SERVER_SCRIPTS,
             clazz -> clazz.getAnnotations(OnlyIn.class)
@@ -63,7 +63,7 @@ public class ScriptDump {
     };
 
     public static final Supplier<ScriptDump> CLIENT_DUMP = () -> new ScriptDump(
-        KubeJS.clientScriptManager,
+        KubeJS.getClientScriptManager(),
         ProbePaths.PROBE.resolve("client"),
         KubeJSPaths.CLIENT_SCRIPTS,
         clazz -> clazz.getAnnotations(OnlyIn.class)
@@ -73,7 +73,7 @@ public class ScriptDump {
     );
 
     public static final Supplier<ScriptDump> STARTUP_DUMP = () -> new ScriptDump(
-        KubeJS.startupScriptManager,
+        KubeJS.getStartupScriptManager(),
         ProbePaths.PROBE.resolve("startup"),
         KubeJSPaths.STARTUP_SCRIPTS,
         (clazz -> true)
@@ -95,7 +95,7 @@ public class ScriptDump {
     public final TSFileWriter globalWriter = new PerFileWriter().setWithIndex(false).setWriteAsModule(false);
 
     public ScriptDump(ScriptManager manager, Path basePath, Path scriptPath, Predicate<Clazz> scriptPredicate) {
-        this.scriptType = manager.type;
+        this.scriptType = manager.scriptType;
         this.manager = manager;
         this.basePath = basePath;
         this.scriptPath = scriptPath;

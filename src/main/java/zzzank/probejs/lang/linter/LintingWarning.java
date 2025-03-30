@@ -1,6 +1,5 @@
 package zzzank.probejs.lang.linter;
 
-import com.github.bsideup.jabel.Desugar;
 import com.google.gson.JsonElement;
 import dev.latvian.mods.rhino.mod.util.color.Color;
 import dev.latvian.mods.rhino.mod.wrapper.ColorWrapper;
@@ -10,7 +9,6 @@ import zzzank.probejs.utils.ProbeText;
 
 import java.nio.file.Path;
 
-@Desugar
 public record LintingWarning(Path file, Level level, int line, int column, String message) {
     public enum Level {
         INFO(ColorWrapper.BLUE),
@@ -28,7 +26,7 @@ public record LintingWarning(Path file, Level level, int line, int column, Strin
         val stripped = relativeBase.getParent().relativize(file);
 
         return ProbeText.literal("[")
-            .append(ProbeText.literal(level().name()).color(level().color.createTextColorKJS()))
+            .append(ProbeText.literal(level().name()).color(level().color.createTextColorJS()))
             .append(ProbeText.literal("] "))
             .append(ProbeText.literal(stripped.toString()))
             .append(ProbeText.literal(String.format(":%d:%d: %s", line, column, message)));
