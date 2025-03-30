@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import zzzank.probejs.features.forge_scan.ClassScanner;
-import zzzank.probejs.features.kubejs.EventJSInfos;
 import zzzank.probejs.lang.java.ClassRegistry;
 import zzzank.probejs.lang.schema.SchemaDump;
 import zzzank.probejs.lang.snippet.SnippetDump;
@@ -51,7 +50,7 @@ public class ProbeDump {
             report(ProbeText.pjs("removed_script", scriptDump.manager.type.toString()));
         }
 
-//        SchemaDownloader downloader = new SchemaDownloader();
+//        val downloader = new SchemaDownloader();
 //        try (var zipStream = downloader.openSchemaStream()) {
 //            downloader.processFile(zipStream);
 //        } catch (Throwable err) {
@@ -82,8 +81,8 @@ public class ProbeDump {
 
         report(ProbeText.pjs("dump.snippets_generated"));
 
-        EventJSInfos.loadFrom(EVENT_CACHE);
-        EventJSInfos.writeTo(EVENT_CACHE);
+//        EventJSInfos.loadFrom(EVENT_CACHE);
+//        EventJSInfos.writeTo(EVENT_CACHE);
 
         if (GameUtils.modHash() != ProbeConfig.modHash.get()) {
             report(ProbeText.pjs("dump.mod_changed").aqua());
