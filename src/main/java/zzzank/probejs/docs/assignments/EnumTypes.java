@@ -1,6 +1,6 @@
 package zzzank.probejs.docs.assignments;
 
-import dev.latvian.mods.rhino.native_java.type.info.EnumTypeInfo;
+import dev.latvian.mods.rhino.util.EnumTypeWrapper;
 import lombok.val;
 import zzzank.probejs.features.rhizo.RhizoState;
 import zzzank.probejs.lang.java.clazz.Clazz;
@@ -9,9 +9,7 @@ import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
-import java.util.Arrays;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class EnumTypes implements ProbeJSPlugin {
@@ -29,9 +27,11 @@ public class EnumTypes implements ProbeJSPlugin {
                 continue;
             }
             try {
-                val types = Arrays.stream(recordedClass.getOriginal().getEnumConstants())
-                    .map(EnumTypes::getEnumName)
-                    .filter(Objects::nonNull)
+                val enumClazz = (Class<? extends Enum<?>>) recordedClass.getOriginal();
+                val types = EnumTypeWrapper.get(enumClazz)
+                    .nameValues
+                    .keySet()
+                    .stream()
                     .map(s -> s.toLowerCase(Locale.ROOT))
                     .map(Types::literal)
                     .toArray(BaseType[]::new);
@@ -43,9 +43,6 @@ public class EnumTypes implements ProbeJSPlugin {
     }
 
     private static String getEnumName(Object o) {
-        if (RhizoState.ENUM_TYPE_INFO) {
-            return EnumTypeInfo.getName(o);
-        }
         if (o instanceof Enum<?> e) {
             return e.name();
         }
