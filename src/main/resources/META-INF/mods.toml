@@ -67,3 +67,10 @@ mandatory = true
 versionRange = "[${minecraft_version},)"
 ordering = "NONE"
 side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "kubejs"
+mandatory = true
+versionRange = "[2001.6.5-build.16,)"
+ordering = "AFTER"
+side = "BOTH"
