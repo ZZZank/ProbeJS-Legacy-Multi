@@ -3,7 +3,6 @@ package zzzank.probejs.mixins;
 import com.google.gson.JsonNull;
 import dev.latvian.mods.kubejs.script.ScriptManager;
 import dev.latvian.mods.rhino.NativeJavaClass;
-import dev.latvian.mods.rhino.Scriptable;
 import lombok.val;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,6 +22,14 @@ public abstract class MixinScriptManager {
         if (GlobalStates.SERVER != null) {
             GlobalStates.SERVER.broadcast("clear_error", JsonNull.INSTANCE);
         }
+    }
+
+    @ModifyVariable(method = "loadJavaClass", at = @At("HEAD"), index = 1, argsOnly = true)
+    public String pjs$supportTSPath(String name) {
+        if (name.startsWith(ClassPath.TS_PATH_PREFIX)) {
+            return ClassPath.fromTS(name).getJavaPath();
+        }
+        return name;
     }
 
     @Inject(method = "loadJavaClass", at = @At("RETURN"))
