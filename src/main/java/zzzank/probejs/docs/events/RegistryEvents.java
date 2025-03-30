@@ -108,15 +108,11 @@ public class RegistryEvents implements ProbeJSPlugin {
         Set<Class<?>> classes = new HashSet<>();
 
         for (val info : RegistryInfos.values()) {
-            val forgeRegistry = info.forgeRaw;
             val vanillaRegistry = info.raw;
-            classes.add(forgeRegistry.getRegistrySuperType());
-            if (vanillaRegistry != null) {
-                //dont use val here, it's unable to figure out the exact type
-                var instance = CollectUtils.anyIn(vanillaRegistry.entrySet());
-                if (instance != null) {
-                    classes.add(instance.getValue().getClass());
-                }
+            //dont use val here, it's unable to figure out the exact type
+            var instance = CollectUtils.anyIn(vanillaRegistry.entrySet());
+            if (instance != null) {
+                classes.add(instance.getValue().getClass());
             }
         }
 

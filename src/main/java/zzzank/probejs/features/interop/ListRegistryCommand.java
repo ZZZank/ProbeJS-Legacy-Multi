@@ -8,8 +8,8 @@ import lombok.val;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tags.StaticTags;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraft.tags.TagKey;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import zzzank.probejs.features.bridge.Command;
 import zzzank.probejs.utils.registry.RegistryInfos;
 
@@ -34,9 +34,6 @@ public abstract class ListRegistryCommand extends Command {
                 key.location().toString();
             if (!registryKey.equals(registryName)) {
                 continue;
-            }
-            if (info.raw == null) {
-                break;
             }
 
             val result = new JsonArray();
@@ -71,8 +68,7 @@ public abstract class ListRegistryCommand extends Command {
 
         @Override
         protected Stream<ResourceLocation> getItems(Registry<?> registry) {
-            val tagHelper = StaticTags.get(registry.key().location());
-            return tagHelper == null ? Stream.of() : tagHelper.getAllTags().getAvailableTags().stream();
+            return registry.getTagNames().map(TagKey::location);
         }
     }
 }

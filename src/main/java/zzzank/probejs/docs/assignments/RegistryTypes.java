@@ -1,12 +1,13 @@
 package zzzank.probejs.docs.assignments;
 
 import lombok.val;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraft.tags.TagKey;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import zzzank.probejs.ProbeConfig;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.snippet.SnippetDump;
@@ -35,7 +36,9 @@ public class RegistryTypes implements ProbeJSPlugin {
     public static final String OF_TYPE_DECL = "T extends { %s: infer U } ? U : never";
 
     public static final String SPECIAL_TAG_OF = SpecialTypes.dot("TagOf");
+    public static final BaseType TYPE_SPECIAL_TAG_OF = Types.primitive(SPECIAL_TAG_OF);
     public static final String SPECIAL_LITERAL_OF = SpecialTypes.dot("LiteralOf");
+    public static final BaseType TYPE_SPECIAL_LITERAL_OF = Types.primitive(SPECIAL_LITERAL_OF);
 
     @Override
     public void assignType(ScriptDump scriptDump) {
@@ -47,25 +50,21 @@ public class RegistryTypes implements ProbeJSPlugin {
         for (val info : RegistryInfos.values()) {
             val key = info.resKey;
             val typeName = NameUtils.registryName(key);
-            scriptDump.assignType(
-                info.forgeRaw.getRegistrySuperType(),
-                Types.primitive(SpecialTypes.dot(typeName))
-            );
+            val assignmentType = info.assignmentType();
+            if (assignmentType != null) {
+                scriptDump.assignType(assignmentType, Types.primitive(SpecialTypes.dot(typeName)));
+            }
             registryNames.add(Types.literal(key.location().toString()));
         }
 
         // ResourceKey<T> to Special.LiteralOf<T>
-        scriptDump.assignType(
-            ResourceKey.class,
-            Types.primitive(SPECIAL_LITERAL_OF).withParams("T")
-        );
-        //Registries (why?)
-        scriptDump.assignType(Registry.class, Types.or(registryNames.toArray(new BaseType[0])));
-        assignRegistryType(scriptDump, ResourceKey.class, SPECIAL_LITERAL_OF, "T");
-        //TagKey<T> to Special.TagOf<T>
-//        scriptDump.assignType(Tag.class, Types.parameterized(Types.primitive("Special.TagOf"), Types.generic("T")));
-        assignRegistryType(scriptDump, Tag.class, SPECIAL_TAG_OF, "T");
-
+        scriptDump.assignType(ResourceKey.class, TYPE_SPECIAL_LITERAL_OF.withParams("T"));
+        // Also holder
+        scriptDump.assignType(Holder.class, TYPE_SPECIAL_LITERAL_OF.withParams("T"));
+        // Registries (why?)
+        scriptDump.assignType(Registry.class, Types.or(registryNames.toArray(BaseType[]::new)));
+        // TagKey<T> to Special.TagOf<T>
+        scriptDump.assignType(TagKey.class, TYPE_SPECIAL_TAG_OF.withParams("T"));
     }
 
     private static void assignRegistryType(ScriptDump scriptDump, Class<?> type, String literalType, String symbol) {
@@ -114,17 +113,14 @@ public class RegistryTypes implements ProbeJSPlugin {
         val typeDecl = new TypeDecl(typeName, types);
         special.addCode(typeDecl);
 
-        val tagNames = info.tagHelper == null
-            ? new BaseType[0]
-            : info.tagHelper
-                .getAllTags()
-                .getAvailableTags()
-                .stream()
+        val tagTypes = resolveAll
+            ? Types.or(
+            info.tagNames()
+                .map(TagKey::location)
                 .map(ResourceLocation::toString)
                 .map(Types::literal)
-                .toArray(BaseType[]::new);
-
-        val tagTypes = resolveAll ? Types.or(tagNames) : Types.STRING;
+                .toArray(BaseType[]::new))
+            : Types.STRING;
         val tagName = typeName + "Tag";
 
         val tagDecl = new TypeDecl(tagName, tagTypes);
@@ -140,10 +136,13 @@ public class RegistryTypes implements ProbeJSPlugin {
         // We inject literal and tag into registry types
         for (val info : RegistryInfos.values()) {
             val key = info.resKey;
-            makeClassModifications(globalClasses, key, info.forgeRaw.getRegistrySuperType());
+            val assignmentType = info.assignmentType();
+            if (assignmentType != null) {
+                makeClassModifications(globalClasses, key, assignmentType);
+            }
         }
-        makeClassModifications(globalClasses, Registry.REGISTRY.key(), Registry.class);
-        makeClassModifications(globalClasses, Registry.DIMENSION_REGISTRY, Level.class);
+        makeClassModifications(globalClasses, BuiltInRegistries.REGISTRY.key(), Registry.class);
+//        makeClassModifications(globalClasses, BuiltInRegistries.DIMENSION_REGISTRY, Level.class);
     }
 
     private static void makeClassModifications(Map<ClassPath, TypeScriptFile> globalClasses, ResourceKey<? extends Registry<?>> key, Class<?> baseClass) {
@@ -177,18 +176,12 @@ public class RegistryTypes implements ProbeJSPlugin {
 
         val classes = new HashSet<Class<?>>();
         for (val info : RegistryInfos.values()) {
-            val registry = info.forgeRaw;
-            if (registry == null) {
-                continue;
-            }
-
-            for (var entry : registry.getEntries()) { //don't use val, lombok is not smart enough to infer types here
+            for (var entry : info.entries()) { //don't use val, lombok is not smart enough to infer types here
                 val location = entry.getKey().location().toString();
                 if (filter.matcher(location).matches()) {
                     classes.add(entry.getValue().getClass());
                 }
             }
-            classes.add(registry.getRegistrySuperType());
         }
         return classes;
     }
@@ -225,12 +218,11 @@ public class RegistryTypes implements ProbeJSPlugin {
                 .choices(entries)
                 .literal("\"");
 
-            val tags = info.tagHelper == null
-                ? Collections.<String>emptyList()
-                : CollectUtils.mapToList(
-                    info.tagHelper.getAllTags().getAvailableTags(),
-                    rl -> "#".concat(rl.toString())
-                );
+            val tags = info.tagNames()
+                .map(TagKey::location)
+                .map(ResourceLocation::toString)
+                .map("#"::concat)
+                .toList();
             if (tags.isEmpty()) {
                 continue;
             }

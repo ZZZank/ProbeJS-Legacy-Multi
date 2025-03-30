@@ -36,7 +36,8 @@ public class ClassScanner {
     public static @NotNull List<Class<?>> scanMods(Collection<String> modids) {
         return modids.stream()
             .map(Platform::getMod)
-            .map(Mod::getFilePath)
+            .map(Mod::getFilePaths)
+            .flatMap(Collection::stream)
             .map(Path::toFile)
             .map(ModJarClassScanner::scanFile)
             .flatMap(Collection::stream)

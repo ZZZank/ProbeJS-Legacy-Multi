@@ -13,7 +13,6 @@ import zzzank.probejs.utils.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
@@ -47,7 +46,7 @@ public class ProbeDump {
         report(ProbeText.pjs("dump.cleaning"));
         for (ScriptDump scriptDump : scriptDumps) {
             scriptDump.removeClasses();
-            report(ProbeText.pjs("removed_script", scriptDump.manager.type.toString()));
+            report(ProbeText.pjs("removed_script", scriptDump.manager.scriptType.toString()));
         }
 
 //        val downloader = new SchemaDownloader();
@@ -113,13 +112,13 @@ public class ProbeDump {
                     dump.acceptClasses(ClassRegistry.REGISTRY.getFoundClasses());
                     try {
                         dump.dump();
-                        report(ProbeText.pjs("dump.dump_finished", dump.manager.type).green());
+                        report(ProbeText.pjs("dump.dump_finished", dump.manager.scriptType).green());
                     } catch (Throwable e) {
-                        report(ProbeText.pjs("dump.dump_error", dump.manager.type).red());
+                        report(ProbeText.pjs("dump.dump_error", dump.manager.scriptType).red());
                         throw new RuntimeException(e);
                     }
                 },
-                String.format("ProbeDumpingThread-%s", dump.manager.type.name)
+                String.format("ProbeDumpingThread-%s", dump.manager.scriptType.name)
             )
         );
         for (val thread : threads) {

@@ -3,6 +3,7 @@ package zzzank.probejs.plugin;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.resources.ResourceLocation;
 import zzzank.probejs.features.kubejs.BindingFilter;
+import zzzank.probejs.features.kubejs.EventJSFilter;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.schema.SchemaDump;
 import zzzank.probejs.lang.schema.SchemaElement;
@@ -89,8 +90,7 @@ public interface ProbeJSPlugin {
     /**
      * Provides event ids (without sub id) that should be skipped by auto-dump for custom support.
      */
-    default Set<String> disableEventDumps(ScriptDump dump) {
-        return Collections.emptySet();
+    default void disableEventDumps(EventJSFilter filter) {
     }
 
     /**

@@ -1,11 +1,11 @@
 package zzzank.probejs.docs;
 
 import dev.latvian.mods.kubejs.bindings.TextWrapper;
-import dev.latvian.mods.kubejs.recipe.RecipeEventJS;
-import dev.latvian.mods.kubejs.text.Text;
+import dev.latvian.mods.kubejs.recipe.RecipesEventJS;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import zzzank.probejs.docs.assignments.SpecialTypes;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.ScriptDump;
@@ -26,10 +26,10 @@ public class ParamFix implements ProbeJSPlugin {
                 helper.file,
                 m -> m.params.size() == 1 && m.name.equals("of"),
                 0,
-                Types.type(Text.class)
+                Types.type(Component.class)
             );
         }
-        if (helper.refreshTSFile(RecipeEventJS.class) != null) {
+        if (helper.refreshTSFile(RecipesEventJS.class) != null) {
             DocUtils.replaceParamType(
                 helper.file,
                 m -> m.params.size() == 1 && m.name.equals("custom"),
@@ -39,7 +39,7 @@ public class ParamFix implements ProbeJSPlugin {
                         "type",
                         Types.primitive(
                             SpecialTypes.dot(
-                                NameUtils.registryName(Registry.RECIPE_SERIALIZER_REGISTRY)
+                                NameUtils.registryName(Registries.RECIPE_SERIALIZER)
                             )
                         )
                     )
