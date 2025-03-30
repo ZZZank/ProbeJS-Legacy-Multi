@@ -1,17 +1,20 @@
 
 {
-  "package": "com.example.examplemod.mixin",
+  "package": "zzzank.probejs.mixins",
   "required": true,
   "target": "@env(DEFAULT)",
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinItemStack"
+    "MixinLootTable",
+    "MixinRecipeManager",
+    "MixinScriptManager",
+    "integration.ScopeSupportMixin"
   ],
   "server": [],
   "client": [
-    "AccessTitleScreen",
-    "ExampleMixin"
+    "AccessTextureAtlas",
+    "AccessTextureManager"
   ],
   "injectors": {
     "defaultRequire": 1
