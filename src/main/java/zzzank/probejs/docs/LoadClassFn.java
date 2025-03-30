@@ -1,6 +1,6 @@
 package zzzank.probejs.docs;
 
-import dev.latvian.mods.kubejs.util.ClassWrapper;
+import dev.latvian.mods.kubejs.bindings.JavaWrapper;
 import lombok.val;
 import zzzank.probejs.features.kubejs.BindingFilter;
 import zzzank.probejs.lang.java.clazz.ClassPath;
@@ -35,7 +35,7 @@ public class LoadClassFn implements ProbeJSPlugin {
 
     @Override
     public void modifyClasses(ScriptDump scriptDump, Map<ClassPath, TypeScriptFile> globalClasses) {
-        val file = globalClasses.get(ClassPath.fromJava(ClassWrapper.class));
+        val file = globalClasses.get(ClassPath.fromJava(JavaWrapper.class));
         if (file == null) {
             return;
         }
