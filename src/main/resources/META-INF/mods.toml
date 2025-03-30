@@ -36,11 +36,14 @@ authors="${mod_author}" #optional
 
 # A multi-line description for your mod. This has no minimum length, but it *is* required!
 description = '''
-This is a very cool mod that does... things.
+ProbeJS fork for Minecraft versions abandoned by ProbeJS
+'''
 
-...and stuff.
-
-Have I reached 280 characters yet?
+[[mods]]
+modId = "probejs"
+version = "7.0.0"
+description = '''
+Mod dummy for compatbility, see ProbeJS Legacy instead
 '''
 
 # An (optional) dependency for your mod. Though technically not required,
