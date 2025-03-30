@@ -2,6 +2,7 @@ package zzzank.probejs.lang.typescript.code.member;
 
 import lombok.val;
 import zzzank.probejs.lang.typescript.Declaration;
+import zzzank.probejs.lang.typescript.code.Code;
 import zzzank.probejs.lang.typescript.code.CommentableCode;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
@@ -81,6 +82,10 @@ public class ConstructorDecl extends CommentableCode {
 
         public final ConstructorDecl buildAsConstructor() {
             return new ConstructorDecl(variableTypes, params);
+        }
+
+        public Code build() {
+            return buildAsConstructor();
         }
     }
 }

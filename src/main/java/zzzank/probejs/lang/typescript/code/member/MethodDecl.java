@@ -3,6 +3,7 @@ package zzzank.probejs.lang.typescript.code.member;
 import lombok.val;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.typescript.Declaration;
+import zzzank.probejs.lang.typescript.code.Code;
 import zzzank.probejs.lang.typescript.code.CommentableCode;
 import zzzank.probejs.lang.typescript.code.ts.FunctionDeclaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
@@ -107,6 +108,10 @@ public class MethodDecl extends CommentableCode {
             decl.isAbstract = isAbstract;
             decl.isStatic = isStatic;
             return decl;
+        }
+
+        public Code build() {
+            return buildAsMethod();
         }
     }
 }
