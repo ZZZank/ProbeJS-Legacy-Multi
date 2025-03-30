@@ -114,8 +114,9 @@ public class ProbeDump {
                         dump.dump();
                         report(ProbeText.pjs("dump.dump_finished", dump.manager.scriptType).green());
                     } catch (Throwable e) {
-                        report(ProbeText.pjs("dump.dump_error", dump.manager.scriptType).red());
-                        throw new RuntimeException(e);
+                        val text = ProbeText.pjs("dump.dump_error", dump.manager.scriptType).red();
+                        report(text);
+                        ProbeJS.LOGGER.error(text.unwrap().getString(), e);
                     }
                 },
                 String.format("ProbeDumpingThread-%s", dump.manager.scriptType.name)

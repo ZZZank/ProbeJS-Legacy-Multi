@@ -23,6 +23,7 @@ public class ForgeEvents implements ProbeJSPlugin {
         val file = globalClasses.get(ClassPath.fromJava(ForgeEventWrapper.class));
         file.declaration.addImport(ImportInfo.ofDefault(ClassPath.fromJava(Event.class)));
         file.declaration.addImport(ImportInfo.ofDefault(ClassPath.fromJava(GenericEvent.class)));
+        file.declaration.addImport(ImportInfo.ofDefault(GlobalClasses.J_CLASS.classPath));
         val classDecl = file.findCode(ClassDecl.class).orElse(null);
         if (classDecl == null) {
             return;
