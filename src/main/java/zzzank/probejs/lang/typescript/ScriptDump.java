@@ -31,6 +31,7 @@ import zzzank.probejs.lang.typescript.refer.ImportType;
 import zzzank.probejs.plugin.ProbeJSPlugins;
 import zzzank.probejs.utils.CollectUtils;
 import zzzank.probejs.utils.JsonUtils;
+import zzzank.probejs.utils.collect.MapBuilder;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -258,17 +259,25 @@ public class ScriptDump {
     public void dumpJSConfig() throws IOException {
         val config = (JsonObject) JsonUtils.parseObject(
             CollectUtils.ofMap(
-                "compilerOptions", CollectUtils.ofMap(
-                    "module", "commonjs",
-                    "target", "ES2015",
-                    "lib", CollectUtils.ofList("ES5", "ES2015"),
-                    "rootDir", ".",
-                    "typeRoots", CollectUtils.ofList(
-                        String.format("../../.probe/%s/probe-types", basePath.getFileName())
-                    ),
-                    "baseUrl", String.format("../../.probe/%s/probe-types", basePath.getFileName()),
-                    "skipLibCheck", true
-                ),
+                "compilerOptions", MapBuilder.<String, Object>ofHash()
+                    .put("module", "commonjs")
+                    .put("moduleResolution", "classic")
+                    .put("isolatedModules", true)
+                    .put("composite", true)
+                    .put("incremental", true)
+                    .put("allowJs", true)
+                    .put("checkJs", false)
+                    .put("target", "ES2015")
+                    .put("lib", CollectUtils.ofList("ES5", "ES2015"))
+                    .put("rootDir", ".")
+                    .put(
+                        "typeRoots",
+                        CollectUtils.ofList(String.format("../../.probe/%s/probe-types", basePath.getFileName()))
+                    )
+                    .put("baseUrl", String.format("../../.probe/%s/probe-types", basePath.getFileName()))
+                    .put("skipLibCheck", true)
+                    .put("skipDefaultLibCheck", true)
+                    .build(),
                 "include", CollectUtils.ofList("./**/*.js")
             )
         );
